@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CShield - Security Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#000000;--primary:#6366f1}
+body{font-family:'Inter',sans-serif;background-color:var(--bg);color:#e4e4e7;-webkit-font-smoothing:antialiased}
+.glass{background:rgba(20,20,20,0.4);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);box-shadow:0 25px 50px -12px rgba(0,0,0,0.5)}
+@keyframes floatUp{0%{transform:translateY(10px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.animate-float{animation:floatUp 0.6s cubic-bezier(0.16,1,0.3,1) both}
+.bgfx{position:fixed;inset:0;background:radial-gradient(circle at 50% 0%,rgba(99,102,241,0.15),transparent 50%);pointer-events:none}
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-black overflow-hidden relative">
+<div class="bgfx"></div>
+
+<div class="w-full max-w-sm animate-float">
+  <div class="glass rounded-2xl p-8 text-center">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-500/10 mb-6 relative">
+      <svg class="w-8 h-8 text-indigo-500 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+      </svg>
+      <div class="absolute inset-0 rounded-full bg-indigo-500/20 blur-md"></div>
+    </div>
+    
+    <h1 class="text-xl font-semibold text-white mb-2">Security Check</h1>
+    <p class="text-sm text-zinc-500 mb-8">Please verify you are human to continue.</p>
+    
+    <div id="verifyBox" class="p-1 rounded-xl bg-black/40 border border-white/10 mb-6 relative overflow-hidden group cursor-pointer hover:border-indigo-500/50 transition-all">
+      <div id="slider" class="absolute top-1 bottom-1 left-1 w-12 bg-indigo-600 rounded-lg shadow-lg flex items-center justify-center z-10 cursor-grab active:cursor-grabbing transition-transform">
+        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </div>
+      <div class="h-12 flex items-center justify-center text-xs font-medium text-zinc-500 uppercase tracking-wide pointer-events-none select-none">
+        Slide to Verify
+      </div>
+      <div id="fill" class="absolute inset-y-1 left-1 bg-indigo-500/20 rounded-lg w-0 pointer-events-none"></div>
+    </div>
+
+    <div id="status" class="h-4 text-xs text-zinc-500"></div>
+  </div>
+  
+  <div class="text-center mt-8">
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5">
+      <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+      <span class="text-[10px] font-medium text-zinc-400">Protected by CShield</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const box = document.getElementById('verifyBox');
+const slider = document.getElementById('slider');
+const fill = document.getElementById('fill');
+const status = document.getElementById('status');
+let isDragging = false;
+let startX = 0;
+let challenge = null;
+let signals = { moves: 0, jitter: 0, focus: 0, ts: Date.now(), clickTs: 0 };
+
+// Initialize Challenge
+(async () => {
+  try {
+    const fp = await getFP();
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('r') || '/';
+    
+    const r = await fetch('/v1/api/captcha/new', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ fp, devID: getDevID(), ref })
+    });
+    if(r.ok) {
+      challenge = await r.json();
+    } else {
+      status.textContent = "Initialization failed. Please refresh.";
+    }
+  } catch(_) {
+    status.textContent = "Network error. Please refresh.";
+  }
+})();
+
+// Fingerprinting
+async function getFP() {
+  const msg = navigator.userAgent + screen.width + screen.height + new Date().getTimezoneOffset();
+  const enc = new TextEncoder().encode(msg);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function getDevID() {
+  let id = localStorage.getItem('c_did');
+  if(!id) {
+    id = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    localStorage.setItem('c_did', id);
+  }
+  return id;
+}
+
+// Interaction
+document.addEventListener('mousemove', e => {
+  signals.moves++;
+  if(isDragging) signals.jitter += Math.abs(e.movementY);
+});
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') signals.focus++; });
+
+slider.addEventListener('mousedown', startDrag);
+slider.addEventListener('touchstart', startDrag);
+
+function startDrag(e) {
+  if(!challenge) return;
+  isDragging = true;
+  startX = (e.pageX || e.touches[0].pageX);
+  signals.clickTs = Date.now();
+  slider.style.transition = 'none';
+  fill.style.transition = 'none';
+}
+
+document.addEventListener('mousemove', drag);
+document.addEventListener('touchmove', drag);
+
+function drag(e) {
+  if(!isDragging) return;
+  const x = (e.pageX || e.touches[0].pageX);
+  const diff = x - startX;
+  const max = box.offsetWidth - slider.offsetWidth - 8; // padding
+  const pos = Math.max(0, Math.min(diff, max));
+  
+  slider.style.transform = `translateX(${pos}px)`;
+  fill.style.width = `${pos + 20}px`;
+  
+  if(pos >= max - 2) {
+    isDragging = false;
+    verify();
+  }
+}
+
+document.addEventListener('mouseup', endDrag);
+document.addEventListener('touchend', endDrag);
+
+function endDrag() {
+  if(!isDragging) return;
+  isDragging = false;
+  slider.style.transition = 'transform 0.3s ease';
+  fill.style.transition = 'width 0.3s ease';
+  slider.style.transform = 'translateX(0)';
+  fill.style.width = '0';
+}
+
+async function verify() {
+  status.textContent = "Verifying...";
+  slider.style.display = 'none';
+  fill.style.width = '100%';
+  fill.className = 'absolute inset-0 bg-indigo-600 flex items-center justify-center text-white text-sm font-medium';
+  fill.textContent = 'Verifying...';
+  
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('r') || '/';
+    
+    const body = {
+      challengeID: challenge.id,
+      fp: await getFP(),
+      devID: getDevID(),
+      signals: signals,
+      ref: ref
+    };
+    
+    const r = await fetch('/v1/api/captcha/verify', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    
+    const res = await r.json();
+    if(res.ok) {
+      fill.className = 'absolute inset-0 bg-emerald-500 flex items-center justify-center text-white text-sm font-medium';
+      fill.textContent = 'Success';
+      status.textContent = 'Redirecting...';
+      const redirect = res.redirect || ref;
+      const target = res.token ? redirect + (redirect.includes('?')?'&':'?') + '__c_chl_rt_tk=' + res.token : redirect;
+      setTimeout(() => window.location.href = target, 500);
+    } else {
+      reset("Verification failed");
+    }
+  } catch(_) {
+    reset("Error verifying");
+  }
+}
+
+function reset(msg) {
+  status.textContent = msg;
+  slider.style.display = 'flex';
+  slider.style.transform = 'translateX(0)';
+  fill.style.width = '0';
+  fill.textContent = '';
+  fill.className = 'absolute inset-y-1 left-1 bg-indigo-500/20 rounded-lg w-0 pointer-events-none';
+  signals = { moves: 0, jitter: 0, focus: 0, ts: Date.now(), clickTs: 0 };
+  // Reload challenge
+  location.reload();
+}
+</script>
+</body>
+</html>
