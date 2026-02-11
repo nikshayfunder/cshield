@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CShield • Login</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@keyframes floatUp{0%{transform:translateY(6px);opacity:.0}100%{transform:translateY(0);opacity:1}}
+.animate-float{animation:floatUp .5s ease-out both}
+</style>
+</head>
+<body class="min-h-screen bg-neutral-950 text-neutral-100 selection:bg-violet-600/30 selection:text-neutral-50 flex items-center justify-center px-4">
+<main class="w-full max-w-md animate-float">
+<div class="mb-6 flex items-center justify-center gap-3">
+<div class="h-9 w-9 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-800/30"></div>
+<div class="text-left">
+<div class="text-sm font-semibold text-neutral-300 tracking-wide uppercase">CShield</div>
+<div class="text-xs text-neutral-500">Edge Security Suite • Admin Access</div>
+</div>
+</div>
+<div class="rounded-xl border border-neutral-900/80 bg-neutral-900/60 backdrop-blur-sm p-8 shadow-xl shadow-black/40">
+<h1 class="text-lg font-semibold mb-1">Admin Login</h1>
+<p class="text-xs text-neutral-400 mb-6">Sign in with your admin credentials.</p>
+<form id="form" class="space-y-4">
+<div>
+<label class="block text-sm mb-1" for="username">Username</label>
+<input id="username" type="text" placeholder="admin" class="w-full rounded-md bg-neutral-950/70 border border-neutral-900 px-3 py-2 text-sm outline-none focus:border-violet-500 focus:shadow-[0_0_0_1px_rgba(139,92,246,.7)]" autocomplete="username" spellcheck="false">
+</div>
+<div>
+<label class="block text-sm mb-1" for="password">Password</label>
+<input id="password" type="password" placeholder="••••••••" class="w-full rounded-md bg-neutral-950/70 border border-neutral-900 px-3 py-2 text-sm outline-none focus:border-violet-500 focus:shadow-[0_0_0_1px_rgba(139,92,246,.7)]" autocomplete="current-password" spellcheck="false">
+</div>
+<button class="w-full rounded-md bg-violet-600 hover:bg-violet-500 transition-colors px-4 py-2.5 text-sm font-medium tracking-wide">Sign in</button>
+</form>
+<div id="msg" class="mt-4 text-xs text-neutral-300 min-h-[1.25rem]"></div>
+</div>
+<p class="mt-4 text-[10px] text-neutral-500 text-center">Unauthorized access is prohibited. All attempts are logged.</p>
+</main>
+<script>
+const f=document.getElementById("form"),u=document.getElementById("username"),p=document.getElementById("password"),m=document.getElementById("msg");
+f.addEventListener("submit",async(e)=>{e.preventDefault();const username=u.value.trim(),password=p.value;if(!username||!password){m.textContent="Username and password are required";return}m.textContent="Signing in...";try{const res=await fetch("/v1/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});let ok=false;if(res.ok){try{const j=await res.json();ok=!!(j&&j.ok)}catch(_){ok=false}}if(ok){location.replace("/dashboard")}else if(res.status===401){m.textContent="Invalid credentials"}else{m.textContent="Login failed"}}catch(_){m.textContent="Login request failed"}});
+</script>
+</body>
+</html>

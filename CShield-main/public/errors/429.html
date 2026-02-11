@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CShield • Too many requests</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@keyframes floatUp{0%{transform:translateY(6px);opacity:.0}100%{transform:translateY(0);opacity:1}}
+.animate-float{animation:floatUp .5s ease-out both}
+.card{backdrop-filter:blur(6px)}
+</style>
+</head>
+<body class="min-h-screen bg-neutral-950 text-neutral-100 selection:bg-violet-600/30 selection:text-neutral-50">
+<div class="border-b border-neutral-900/80 bg-neutral-950/60">
+  <div class="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-800/20"></div>
+      <div class="leading-tight">
+        <div class="font-semibold -mb-0.5">CShield</div>
+        <div class="text-[11px] text-neutral-400">Edge Security</div>
+      </div>
+    </div>
+    <div class="text-xs text-neutral-400 inline-flex items-center gap-2">
+      <span id="edgeLoc" class="rounded-md bg-neutral-900 px-2 py-1">CShield Edge</span>
+      <span class="rounded-md bg-neutral-900 px-2 py-1">Error code: 429</span>
+    </div>
+  </div>
+</div>
+
+<main class="mx-auto max-w-7xl px-4 py-10 animate-float">
+  <h1 class="text-3xl font-semibold mb-2">Too many requests</h1>
+  <p class="text-neutral-300 mb-8">Your client sent too many requests in a short period. Protection systems temporarily throttled traffic.</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="rounded-xl border border-neutral-900 bg-neutral-900/50 p-6 card">
+      <h2 class="font-medium mb-2">What happened?</h2>
+      <p class="text-neutral-300 text-sm">Rate limiting or surge detection was triggered. This helps keep the service available during high load and abusive bursts.</p>
+    </div>
+    <div class="rounded-xl border border-neutral-900 bg-neutral-900/50 p-6 card">
+      <h2 class="font-medium mb-2">What can I do?</h2>
+      <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+        <li>Wait a few seconds and retry</li>
+        <li>Avoid sending parallel or automated requests</li>
+        <li>Site owners can adjust thresholds</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-10 text-xs text-neutral-500">Request ID: <span id="rid"></span> • <span id="edgeLoc3">CShield Edge</span></div>
+</main>
+
+<script>
+(function(){
+  function r(){const a=crypto.getRandomValues(new Uint8Array(8));return Array.from(a,x=>x.toString(16).padStart(2,"0")).join("")}
+  const ridEl=document.getElementById("rid");
+  if(ridEl) ridEl.textContent=r();
+  fetch("/v1/api/edge/info").then(x=>x.json()).then(e=>{
+    const loc=[e.region||"",e.city||""].filter(Boolean).join(" / ")||[e.country||"",e.region||""].filter(Boolean).join(" / ")||"CShield Edge";
+    const h=document.getElementById("edgeLoc"); if(h) h.textContent="CShield Edge • "+loc;
+    const f=document.getElementById("edgeLoc3"); if(f) f.textContent="Data center: "+loc+" • Edge: CShield";
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>

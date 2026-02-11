@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CShield • Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#09090b;--primary:#6366f1;--accent:#a855f7}
+html,body{height:100%;scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background-color:var(--bg);color:#e4e4e7;-webkit-font-smoothing:antialiased}
+.glass{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(10px);transition:transform .2s,background .2s;overflow:hidden;position:relative}
+.glass:hover{background:rgba(255,255,255,0.05);transform:translateY(-1px);box-shadow:0 10px 40px -10px rgba(0,0,0,0.5)}
+.glass::after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(800px circle at var(--mouse-x,0) var(--mouse-y,0),rgba(255,255,255,0.06),transparent 40%);opacity:0;transition:opacity .3s;pointer-events:none}
+.glass:hover::after{opacity:1}
+.bgfx{position:fixed;inset:0;background:
+radial-gradient(40% 30% at 15% 10%,rgba(139,92,246,.10),transparent 60%),
+radial-gradient(30% 30% at 85% 0,rgba(59,130,246,.08),transparent 60%),
+radial-gradient(50% 40% at 50% 100%,rgba(16,185,129,.06),transparent 60%);filter:blur(44px);pointer-events:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2)}
+</style>
+</head>
+<body class="bg-[var(--bg)] text-zinc-200 antialiased min-h-screen overflow-x-hidden">
+<div class="bgfx"></div>
+
+<div class="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+  <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-violet-500/10 rounded-full blur-[120px]"></div>
+  <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-fuchsia-500/10 rounded-full blur-[120px]"></div>
+</div>
+
+<div class="flex flex-col lg:flex-row min-h-screen">
+  <aside class="lg:w-72 border-b lg:border-b-0 lg:border-r border-neutral-800/80 bg-black/40 backdrop-blur-xl flex lg:flex-col justify-between p-5 z-40 sticky top-0 lg:h-screen">
+    <div class="flex flex-col gap-8">
+      <div class="flex items-center gap-3 px-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-bold text-zinc-100 tracking-tight block leading-none">CShield</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-medium">Edge Security</span>
+        </div>
+      </div>
+      <nav class="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar text-sm">
+        <a href="/dashboard" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-zinc-100 hover:bg-white/5 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 3.5L3 9v11h6v-7h6v7h6V9z"/>
+          </svg>
+          <span>Overview</span>
+        </a>
+        <a href="/analytics" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-zinc-100 hover:bg-white/5 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 5h16v2H4V5zm0 4h10v2H4v-2zm0 4h7v2H4v-2zm9 0h7v2h-7v-2z"/>
+          </svg>
+          <span>Traffic</span>
+        </a>
+        <a href="/features" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-zinc-100 hover:bg-white/5 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 6h16v2H4V6zm0 4h10v2H4v-2zm0 4h7v2H4v-2zm9 0h7v2h-7v-2z"/>
+          </svg>
+          <span>Features</span>
+        </a>
+        <a href="/proxies" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-zinc-100 hover:bg-white/5 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 5h18v4H3V5zm0 5h18v9H3v-9zm2 2v5h14v-5H5z"/>
+          </svg>
+          <span>Proxies</span>
+        </a>
+        <a href="/settings" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium bg-white/5 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 8a4 4 0 1 0 .001 8.001A4 4 0 0 0 12 8zm8.94 4a7.96 7.96 0 0 0-.16-1.61l2.07-1.62l-2-3.46l-2.49 1a8.24 8.24 0 0 0-2.79-1.62l-.42-2.65H9.85l-.42 2.65a8.24 8.24 0 0 0-2.79 1.62l-2.49-1l-2 3.46l-2.07-1.62c.1-.52.16-1.06.16-1.61z"/>
+          </svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-4 lg:p-8 w-full max-w-[1920px] mx-auto space-y-6">
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
+      <div>
+        <h1 class="text-2xl font-semibold text-white tracking-tight">Configuration</h1>
+        <p class="text-sm text-zinc-500 mt-1">Edit JSON configuration files that drive CShield behavior.</p>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <aside class="lg:col-span-1 glass rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="inline-flex items-center gap-2">
+            <div class="h-6 w-6 rounded-md bg-neutral-900 grid place-items-center">
+              <svg width="14" height="14" viewBox="0 0 24 24" class="text-violet-400"><path fill="currentColor" d="M4 4h16v4H4V4zm0 6h7v10H4V10zm9 0h7v10h-7V10z"/></svg>
+            </div>
+            <h2 class="font-semibold text-sm text-zinc-200">Config Files</h2>
+          </div>
+          <button id="refresh" class="rounded-md bg-neutral-900 hover:bg-neutral-800 px-3 py-1.5 text-xs inline-flex items-center gap-2 transition">
+            <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M12 6V3L8 7l4 4V8a4 4 0 1 1-4 4H6a6 6 0 1 0 6-6z"/></svg>
+            Refresh
+          </button>
+        </div>
+        <ul id="fileList" class="text-sm text-zinc-300 space-y-2 max-h-[60vh] overflow-auto">
+        </ul>
+      </aside>
+
+      <section class="lg:col-span-2 glass rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-3 border-b border-white/5 pb-3">
+          <div class="text-sm text-zinc-400 inline-flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" class="opacity-75"><path fill="currentColor" d="M4 6h16v2H4V6zm0 4h10v2H4v-2zm0 4h16v2H4v-2z"/></svg>
+            Editing
+          </div>
+          <div id="path" class="text-sm font-medium truncate max-w-[70%] text-zinc-200">—</div>
+        </div>
+
+        <div>
+          <textarea id="editor" spellcheck="false"
+            class="w-full h-[58vh] rounded-md bg-neutral-950/70 border border-neutral-900 px-3 py-3 font-mono text-[13px] leading-6 outline-none focus:shadow-[0_0_0_2px_rgba(99,102,241,.5)]"
+            placeholder="{ ... }"></textarea>
+
+          <div class="mt-3 flex items-center justify-between">
+            <div id="msg" class="text-xs text-zinc-400 inline-flex items-center gap-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-neutral-600"></span>
+              Ready
+            </div>
+            <div class="space-x-2">
+              <button id="format" class="rounded-md bg-neutral-900 hover:bg-neutral-800 px-3 py-1.5 text-sm inline-flex items-center gap-2 transition">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M5 4h14v2H5V4zm2 4h10v2H7V8zm-2 4h14v2H5v-2zm2 4h10v2H7v-2z"/></svg>
+                Format
+              </button>
+              <button id="save" class="rounded-md bg-violet-600 hover:bg-violet-500 px-3 py-1.5 text-sm inline-flex items-center gap-2 transition">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M17 3H7v18l5-5l5 5V3z"/></svg>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<script>
+const fileList = document.getElementById("fileList");
+const editor = document.getElementById("editor");
+const pathEl = document.getElementById("path");
+const msg = document.getElementById("msg");
+let currentPath = "";
+
+function el(tag, cls){ const e=document.createElement(tag); if(cls) e.className=cls; return e; }
+
+function setMsg(text, tone){
+  msg.textContent = text || "";
+  const dot = msg.querySelector("span");
+  if(!dot) return;
+  dot.className = "inline-block w-1.5 h-1.5 rounded-full " + (
+    tone==="ok" ? "bg-emerald-500" :
+    tone==="warn" ? "bg-amber-500" :
+    tone==="err" ? "bg-rose-500" : "bg-neutral-600"
+  );
+}
+
+async function listFiles(){
+  fileList.innerHTML = "";
+  setMsg("Loading files...", "warn");
+  try{
+    const r = await fetch("/v1/api/configs/list");
+    if(!r.ok){ setMsg("Failed to list configs", "err"); return; }
+    const j = await r.json();
+    const files = (j.files||[]).sort();
+    if(files.length===0){ setMsg("No configs", "warn"); return; }
+    files.forEach(p=>{
+      const li = el("li");
+      const a = el("button","w-full text-left rounded-md border border-neutral-900 bg-neutral-950/60 px-3 py-2 hover:bg-neutral-900 transition inline-flex items-center gap-2");
+      a.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" class="text-violet-400"><path fill="currentColor" d="M10 4H4v16h16V8h-8zM8 8h4v4H8z"/></svg><span class="truncate">'+p+'</span>';
+      a.addEventListener("click",()=>loadFile(p));
+      li.appendChild(a);
+      fileList.appendChild(li);
+    });
+    setMsg("", "");
+  }catch(e){
+    setMsg("Failed to list configs", "err");
+  }
+}
+
+async function loadFile(p){
+  setMsg("Loading "+p+"...", "warn");
+  try{
+    const r = await fetch("/v1/api/configs/read?path="+encodeURIComponent(p));
+    if(!r.ok){ setMsg("Failed to open "+p, "err"); return; }
+    const j = await r.json();
+    currentPath = p;
+    pathEl.textContent = p;
+    editor.value = j.content || "{}";
+    setMsg("Loaded", "ok");
+  }catch(e){
+    setMsg("Failed to open "+p, "err");
+  }
+}
+
+function prettyFormat(){
+  try{
+    const obj = JSON.parse(editor.value);
+    editor.value = JSON.stringify(obj, null, 2);
+    setMsg("Formatted", "ok");
+  }catch(e){
+    setMsg("Invalid JSON", "err");
+  }
+}
+
+async function saveFile(){
+  if(!currentPath){ setMsg("Select a file first", "warn"); return; }
+  try{ JSON.parse(editor.value); }catch(e){ setMsg("Invalid JSON", "err"); return; }
+  setMsg("Saving...", "warn");
+  try{
+    const body = { path: currentPath, content: editor.value };
+    const r = await fetch("/v1/api/configs/save", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
+    if(!r.ok){ setMsg("Save failed", "err"); return; }
+    setMsg("Saved", "ok");
+  }catch(e){
+    setMsg("Save failed", "err");
+  }
+}
+
+document.getElementById("refresh").addEventListener("click", listFiles);
+document.getElementById("format").addEventListener("click", prettyFormat);
+document.getElementById("save").addEventListener("click", saveFile);
+
+;(async()=>{ await listFiles(); })();
+</script>
+</body>
+</html>

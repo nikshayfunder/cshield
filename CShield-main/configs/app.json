@@ -1,0 +1,20 @@
+{
+  "host": "0.0.0.0",
+  "port": 443,
+  "domain": "",
+  "tls": {
+    "enable": false, // tls enable or nah
+    "cache_dir": "acme-cache",
+    "email": ""
+  },
+  "server_key": "", // secure server key
+  "redis": {
+    "addr": "",
+    "password": "",
+    "db": 0
+  },
+  "mongo": {
+    "uri": "",
+    "database": ""
+  }
+}

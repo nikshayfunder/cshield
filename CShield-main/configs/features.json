@@ -1,0 +1,19 @@
+{
+  "analytics": true,
+  "anti_bypass_detection": true,
+  "asn_blocking": true,
+  "captcha": true,
+  "cookie_verification": true,
+  "cvac": true,
+  "cwall": true,
+  "header_uri_filtering": true,
+  "load_balancer": true,
+  "maintenance": false,
+  "page_rules": true,
+  "peers": false,
+  "rate_limiting": true,
+  "reverse_proxies": true,
+  "sqli_xss_bad_payload": true,
+  "ua_referrer_blocking": true,
+  "waf": true
+}

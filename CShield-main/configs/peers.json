@@ -1,0 +1,10 @@
+{
+  "smart_routing": true,
+  "multi_scrubbing": true,
+  "peers": [
+    {
+      "name": "ro-bcu-01-origin",
+      "url": "https://ro-bcu-01-origin.cshield.org"
+    }
+  ]
+}

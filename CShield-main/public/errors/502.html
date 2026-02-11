@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CShield • Bad gateway</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@keyframes floatUp{0%{transform:translateY(6px);opacity:.0}100%{transform:translateY(0);opacity:1}}
+.animate-float{animation:floatUp .5s ease-out both}
+.card{backdrop-filter:blur(6px)}
+</style>
+</head>
+<body class="min-h-screen bg-neutral-950 text-neutral-100 selection:bg-violet-600/30 selection:text-neutral-50">
+<div class="border-b border-neutral-900/80 bg-neutral-950/60">
+  <div class="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-800/20"></div>
+      <div class="leading-tight">
+        <div class="font-semibold -mb-0.5">CShield</div>
+        <div class="text-[11px] text-neutral-400">Edge Security</div>
+      </div>
+    </div>
+    <div class="text-xs text-neutral-400 inline-flex items-center gap-2">
+      <span id="edgeLoc" class="rounded-md bg-neutral-900 px-2 py-1">CShield Edge</span>
+      <span class="rounded-md bg-neutral-900 px-2 py-1">Error code: 502</span>
+    </div>
+  </div>
+</div>
+
+<main class="mx-auto max-w-7xl px-4 py-10 animate-float">
+  <h1 class="text-3xl font-semibold mb-2">Bad gateway</h1>
+  <p class="text-neutral-300 mb-8">The edge received an invalid response from the origin server while proxying your request.</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+    <div class="rounded-xl border border-neutral-900 bg-neutral-900/50 p-5 card">
+      <div class="text-sm text-neutral-400 mb-2">You</div>
+      <div class="flex items-center justify-between">
+        <div class="font-medium">Browser</div>
+        <div class="inline-flex items-center gap-2 text-emerald-400 text-sm"><span class="h-2 w-2 rounded-full bg-emerald-400"></span>Working</div>
+      </div>
+    </div>
+    <div class="rounded-xl border border-neutral-900 bg-neutral-900/50 p-5 card">
+      <div class="text-sm text-neutral-400 mb-2"><span id="edgeLoc2">CShield Edge</span></div>
+      <div class="flex items-center justify-between">
+        <div class="font-medium">CDN Proxy</div>
+        <div class="inline-flex items-center gap-2 text-emerald-400 text-sm"><span class="h-2 w-2 rounded-full bg-emerald-400"></span>Status: up</div>
+      </div>
+    </div>
+    <div class="rounded-xl border border-neutral-900 bg-neutral-900/50 p-5 card">
+      <div class="text-sm text-neutral-400 mb-2">Host</div>
+      <div class="flex items-center justify-between">
+        <div class="font-medium">Origin Server</div>
+        <div class="inline-flex items-center gap-2 text-rose-400 text-sm"><span class="h-2 w-2 rounded-full bg-rose-500"></span>Down</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="rounded-xl border border-neutral-900 bg-neutral-900/50 p-6 card">
+      <h2 class="font-medium mb-2">What happened?</h2>
+      <p class="text-neutral-300 text-sm">While forwarding your request, the edge received an invalid response or the connection was closed by the origin.</p>
+    </div>
+    <div class="rounded-xl border border-neutral-900 bg-neutral-900/50 p-6 card">
+      <h2 class="font-medium mb-2">What can I do?</h2>
+      <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+        <li>Retry again in a few moments</li>
+        <li>Site owners should check origin service health, logs, firewall and upstream TLS configuration</li>
+        <li>Verify DNS, reverse proxy mapping and ports for your origin</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-10 text-xs text-neutral-500">Request ID: <span id="rid"></span> • <span id="edgeLoc3">CShield Edge</span></div>
+</main>
+
+<script>
+(function(){
+  function rid(){const a=crypto.getRandomValues(new Uint8Array(8));return Array.from(a,x=>x.toString(16).padStart(2,"0")).join("")}
+  const ridEl=document.getElementById("rid");
+  if(ridEl) ridEl.textContent=rid();
+  fetch("/v1/api/edge/info").then(r=>r.json()).then(e=>{
+    const loc=[e.region||"",e.capital||""].filter(Boolean).join(" / ")
+      || [e.region||"",e.city||""].filter(Boolean).join(" / ")
+      || [e.country||"",e.region||""].filter(Boolean).join(" / ")
+      || "CShield Edge";
+    const h=document.getElementById("edgeLoc"); if(h) h.textContent="CShield Edge • "+loc;
+    const h2=document.getElementById("edgeLoc2"); if(h2) h2.textContent="CShield Edge • "+loc;
+    const f=document.getElementById("edgeLoc3"); if(f) f.textContent="Data center: "+loc+" • Edge: CShield";
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
