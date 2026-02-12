@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CShield • Service Unavailable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#000000;--primary:#6366f1}
+body{font-family:'Inter',sans-serif;background-color:var(--bg);color:#e4e4e7;-webkit-font-smoothing:antialiased}
+.glass{background:rgba(20,20,20,0.4);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);box-shadow:0 25px 50px -12px rgba(0,0,0,0.5)}
+@keyframes floatUp{0%{transform:translateY(10px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.animate-float{animation:floatUp 0.6s cubic-bezier(0.16,1,0.3,1) both}
+.bgfx{position:fixed;inset:0;background:radial-gradient(circle at 50% 0%,rgba(99,102,241,0.15),transparent 50%);pointer-events:none}
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-black overflow-hidden relative">
+<div class="bgfx"></div>
+
+<div class="w-full max-w-lg animate-float">
+  <div class="glass rounded-2xl p-8 text-center border-t-4 border-t-rose-500">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-500/10 mb-6">
+      <svg class="w-8 h-8 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+      </svg>
+    </div>
+    
+    <h1 class="text-2xl font-bold text-white mb-2">Service Unavailable</h1>
+    <p class="text-zinc-400 mb-6">The server is currently unable to handle the request due to a temporary overload or scheduled maintenance.</p>
+    
+    <div class="bg-black/40 rounded-lg p-4 text-left text-sm border border-white/5">
+      <p class="text-zinc-500 mb-2 font-medium uppercase tracking-wide text-xs">Status:</p>
+      <ul class="list-disc list-inside text-zinc-400 space-y-1">
+        <li>System is under heavy load</li>
+        <li>Maintenance in progress</li>
+        <li>Please try again later</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="text-center mt-8 text-xs text-zinc-600">
+    Request ID: <span id="rid" class="font-mono text-zinc-500"></span>
+    <span class="mx-2">•</span>
+    CShield Edge
+  </div>
+</div>
+
+<script>
+(function(){
+  function rid(){const a=crypto.getRandomValues(new Uint8Array(8));return Array.from(a,x=>x.toString(16).padStart(2,"0")).join("")}
+  const el=document.getElementById("rid");
+  if(el) el.textContent=rid();
+})();
+</script>
+</body>
+</html>
