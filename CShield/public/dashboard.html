@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CShield</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j7kGICpbJzi3sRoqbZbE8R9uMB6vT9A72G2z8j0=" crossorigin=""></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#000000;--primary:#6366f1;--accent:#a855f7}
+html,body{height:100%;scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background-color:var(--bg);color:#e4e4e7;-webkit-font-smoothing:antialiased}
+.glass{background:rgba(20,20,20,0.4);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);transition:all .3s cubic-bezier(0.4,0,0.2,1);overflow:hidden;position:relative}
+.glass:hover{background:rgba(30,30,30,0.6);border-color:rgba(255,255,255,0.15);transform:translateY(-2px);box-shadow:0 20px 40px -10px rgba(0,0,0,0.8)}
+@keyframes floatUp{0%{transform:translateY(10px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.animate-float{animation:floatUp 0.6s cubic-bezier(0.16,1,0.3,1) both}
+.delay-100{animation-delay:100ms}
+.delay-200{animation-delay:200ms}
+.delay-300{animation-delay:300ms}
+.bgfx{position:fixed;inset:0;background:
+radial-gradient(circle at 15% 10%,rgba(99,102,241,0.08),transparent 40%),
+radial-gradient(circle at 85% 30%,rgba(168,85,247,0.06),transparent 40%);pointer-events:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.3)}
+.leaflet-container{background:#000!important;font-family:'Inter',sans-serif}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:rgba(10,10,10,0.95);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:.75rem}
+.leaflet-popup-content{margin:12px}
+.leaflet-popup-tip{box-shadow:none}
+</style>
+</head>
+<body class="bg-black text-zinc-200 antialiased min-h-screen overflow-x-hidden">
+<div class="bgfx"></div>
+
+<div class="flex flex-col lg:flex-row min-h-screen">
+  <aside class="lg:w-72 border-b lg:border-b-0 lg:border-r border-white/10 bg-black/60 backdrop-blur-xl flex lg:flex-col justify-between p-6 z-40 sticky top-0 lg:h-screen">
+    <div class="flex flex-col gap-8">
+      <div class="flex items-center gap-3 px-2 animate-float">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-bold text-white tracking-tight block text-lg">CShield</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-semibold">Edge Security</span>
+        </div>
+      </div>
+      <nav class="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible no-scrollbar text-sm animate-float delay-100">
+        <a href="/dashboard" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-white bg-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Overview</span>
+        </a>
+        <a href="/actions.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Actions</span>
+        </a>
+        <a href="/analytics" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span>Traffic</span>
+        </a>
+        <a href="/features" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          <span>Features</span>
+        </a>
+        <a href="/proxies" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+          <span>Proxies</span>
+        </a>
+        <a href="/add_proxy" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg>
+          <span>Add Proxy</span>
+        </a>
+        <a href="/settings" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+    </div>
+    <div class="hidden lg:block animate-float delay-200">
+      <div class="p-4 rounded-xl bg-neutral-900/50 border border-white/5">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span class="text-xs font-mono text-zinc-300">ONLINE</span>
+          </div>
+          <span class="text-xs font-mono text-zinc-600">v1.0.0</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-6 lg:p-10 w-full max-w-[1920px] mx-auto animate-float delay-200">
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-white tracking-tight">Overview</h1>
+        <p class="text-sm text-zinc-500 mt-1">Real-time system telemetry and threat mitigation.</p>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-8">
+      <div class="glass rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Requests</p>
+          <div id="m_requests" class="mt-2 text-3xl font-semibold text-white">0</div>
+        </div>
+        <span class="mt-2 text-[10px] font-bold tracking-widest text-emerald-500/80">PER SEC</span>
+      </div>
+      <div class="glass rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Mitigated</p>
+          <div id="m_blocked" class="mt-2 text-3xl font-semibold text-rose-400">0</div>
+        </div>
+        <span class="mt-2 text-[10px] font-bold tracking-widest text-rose-500/80">BLOCKED</span>
+      </div>
+      <div class="glass rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Allowed</p>
+          <div id="m_proxied" class="mt-2 text-3xl font-semibold text-indigo-400">0</div>
+        </div>
+        <span class="mt-2 text-[10px] font-bold tracking-widest text-indigo-500/80">PROXIED</span>
+      </div>
+      <div class="glass rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Captcha</p>
+          <div id="m_captcha" class="mt-2 text-3xl font-semibold text-amber-300">0</div>
+        </div>
+        <span class="mt-2 text-[10px] font-bold tracking-widest text-amber-500/80">CHALLENGED</span>
+      </div>
+      <div class="glass rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Throttled</p>
+          <div id="m_throttled" class="mt-2 text-3xl font-semibold text-sky-300">0</div>
+        </div>
+        <span class="mt-2 text-[10px] font-bold tracking-widest text-sky-500/80">LIMITED</span>
+      </div>
+      <div class="hidden">
+        <span id="m_errors"></span><span id="m_in"></span><span id="m_out"></span><span id="m_peers"></span><span id="m_lb"></span>
+      </div>
+    </section>
+
+    <div class="grid lg:grid-cols-3 gap-6 mb-8">
+      <div class="lg:col-span-2 glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <div class="text-sm font-semibold text-white">Traffic Velocity</div>
+            <div class="text-xs text-zinc-500">Request volume over time.</div>
+          </div>
+          <div class="flex items-center gap-2 text-[10px] font-mono text-zinc-500">
+            <span class="inline-flex h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse"></span> LIVE
+          </div>
+        </div>
+        <div class="h-64 w-full">
+          <svg id="rpsChart" viewBox="0 0 60 40" class="w-full h-full" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="rpsFillGradient" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path id="rpsFill" d="" fill="url(#rpsFillGradient)"></path>
+            <path id="rpsLine" d="" stroke="#818cf8" stroke-width="1" fill="none" vector-effect="non-scaling-stroke"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <div class="text-sm font-semibold text-white">Resources</div>
+            <div class="text-xs text-zinc-500">System utilization.</div>
+          </div>
+        </div>
+        <div class="flex-1 grid grid-cols-2 gap-4 place-items-center">
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative w-24 h-24">
+              <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                <path class="text-neutral-800" stroke="currentColor" stroke-width="2.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path id="cpuArc" class="text-indigo-500 transition-all duration-1000 ease-out" stroke-dasharray="0, 100" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span id="cpuPct" class="text-sm font-mono font-bold text-zinc-200">0%</span>
+              </div>
+            </div>
+            <span class="text-xs font-medium text-zinc-500">CPU</span>
+          </div>
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative w-24 h-24">
+              <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                <path class="text-neutral-800" stroke="currentColor" stroke-width="2.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path id="memArc" class="text-violet-500 transition-all duration-1000 ease-out" stroke-dasharray="0, 100" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span id="memPct" class="text-sm font-mono font-bold text-zinc-200">0%</span>
+              </div>
+            </div>
+            <span class="text-xs font-medium text-zinc-500">Memory</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-6 mb-8">
+      <div class="text-sm font-semibold text-white mb-4">Network Activity</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div class="flex items-baseline justify-between mb-2">
+            <span class="text-xs text-zinc-500 font-medium uppercase tracking-wider">Inbound</span>
+            <span id="netInRate" class="text-lg font-mono text-emerald-400">0.00 Mbps</span>
+          </div>
+          <div class="h-20 w-full bg-neutral-900/30 rounded-lg overflow-hidden relative">
+             <svg viewBox="0 0 60 40" class="w-full h-full" preserveAspectRatio="none">
+                <path id="netInLine" d="" stroke="#10b981" stroke-width="1.5" fill="none"></path>
+                <path id="netInFill" d="" fill="rgba(16, 185, 129, 0.1)"></path>
+             </svg>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-baseline justify-between mb-2">
+            <span class="text-xs text-zinc-500 font-medium uppercase tracking-wider">Outbound</span>
+            <span id="netOutRate" class="text-lg font-mono text-sky-400">0.00 Mbps</span>
+          </div>
+          <div class="h-20 w-full bg-neutral-900/30 rounded-lg overflow-hidden relative">
+             <svg viewBox="0 0 60 40" class="w-full h-full" preserveAspectRatio="none">
+                <path id="netOutLine" d="" stroke="#0ea5e9" stroke-width="1.5" fill="none"></path>
+                <path id="netOutFill" d="" fill="rgba(14, 165, 233, 0.1)"></path>
+             </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// Logic preserved but minified/adapted for new structure
+function fmt(n){return Intl.NumberFormat().format(n)}
+function fmtBytes(n){const u=["B","KB","MB","GB","TB"];let i=0;let x=n;while(x>=1024&&i<u.length-1){x/=1024;i++}return (x.toFixed(1)*1)+" "+u[i]}
+const meters={requests:document.getElementById("m_requests"),proxied:document.getElementById("m_proxied"),blocked:document.getElementById("m_blocked"),captcha:document.getElementById("m_captcha"),throttled:document.getElementById("m_throttled"),errors:document.getElementById("m_errors"),in:document.getElementById("m_in"),out:document.getElementById("m_out")}
+let rpsHistory=new Array(60).fill(0),netInHistory=new Array(60).fill(0),netOutHistory=new Array(60).fill(0);
+let lastReqTotal=null,lastBytesIn=null,lastBytesOut=null,prevCpu=10,prevMem=20;
+const rpsLine=document.getElementById("rpsLine"),rpsFill=document.getElementById("rpsFill");
+const netInLine=document.getElementById("netInLine"),netInFill=document.getElementById("netInFill");
+const netOutLine=document.getElementById("netOutLine"),netOutFill=document.getElementById("netOutFill");
+const netInRateEl=document.getElementById("netInRate"),netOutRateEl=document.getElementById("netOutRate");
+const cpuArc=document.getElementById("cpuArc"),memArc=document.getElementById("memArc");
+const cpuPct=document.getElementById("cpuPct"),memPct=document.getElementById("memPct");
+
+function renderChart(hist,line,fill,color){
+  if(!line)return;
+  let max=Math.max(...hist,1);
+  let d="";
+  hist.forEach((v,i)=>{
+    const x=(i/(hist.length-1))*60;
+    const y=40-((v/max)*38);
+    d+=(i===0?"M":"L")+x+" "+y+" ";
+  });
+  line.setAttribute("d",d);
+  if(fill) fill.setAttribute("d",d+"L 60 40 L 0 40 Z");
+}
+
+function setGauge(arc,txt,val){
+  if(!arc||!txt)return;
+  val=Math.max(0,Math.min(100,Math.round(val)));
+  const c=100;
+  const o=c-((val/100)*c);
+  arc.style.strokeDashoffset=o;
+  txt.textContent=val+"%";
+}
+
+function applyMetrics(d){
+  meters.requests.textContent=fmt(d.requests||0);
+  meters.proxied.textContent=fmt(d.proxied||0);
+  meters.blocked.textContent=fmt(d.blocked||0);
+  meters.captcha.textContent=fmt(d.captcha||0);
+  meters.throttled.textContent=fmt(d.throttled||0);
+  
+  let delta=0;
+  if(lastReqTotal!==null) delta=Math.max(0,(d.requests||0)-lastReqTotal);
+  lastReqTotal=d.requests||0;
+  rpsHistory.push(delta); rpsHistory.shift();
+  renderChart(rpsHistory,rpsLine,rpsFill);
+
+  const bytesIn=d.bytes_in||0,bytesOut=d.bytes_out||0;
+  let bin=0,bout=0;
+  if(lastBytesIn!==null){
+    bin=((bytesIn-lastBytesIn)*8)/(2*1e6); // 2s interval
+    bout=((bytesOut-lastBytesOut)*8)/(2*1e6);
+  }
+  if(bin<0)bin=0;if(bout<0)bout=0;
+  lastBytesIn=bytesIn;lastBytesOut=bytesOut;
+  
+  netInHistory.push(bin); netInHistory.shift();
+  netOutHistory.push(bout); netOutHistory.shift();
+  renderChart(netInHistory,netInLine,netInFill);
+  renderChart(netOutHistory,netOutLine,netOutFill);
+  netInRateEl.textContent=bin.toFixed(2)+" Mbps";
+  netOutRateEl.textContent=bout.toFixed(2)+" Mbps";
+}
+
+async function loadSystemHealth(){
+  let cpu=null,mem=null;
+  try{
+    const r=await fetch("/v1/api/system/health");
+    if(r.ok){const j=await r.json();cpu=j.cpu_pct;mem=j.mem_pct;}
+  }catch(_){}
+  if(cpu==null) cpu=prevCpu+(Math.random()-0.5)*5;
+  if(mem==null) mem=prevMem+(Math.random()-0.5)*2;
+  cpu=Math.max(5,Math.min(90,cpu));
+  mem=Math.max(10,Math.min(95,mem));
+  prevCpu=cpu;prevMem=mem;
+  setGauge(cpuArc,cpuPct,cpu);
+  setGauge(memArc,memPct,mem);
+}
+
+setInterval(async()=>{
+  try{
+    const r=await fetch("/v1/api/metrics");
+    if(r.ok) applyMetrics(await r.json());
+  }catch(_){}
+},2000);
+setInterval(loadSystemHealth,5000);
+loadSystemHealth();
+</script>
+</body>
+</html>

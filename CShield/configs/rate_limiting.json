@@ -1,0 +1,5 @@
+{
+  "global_rps": 160,
+  "burst": 100,
+  "window_ms": 1000
+}
